@@ -25,7 +25,7 @@ const register = async (req, res) => {
     .json({ success: true, msg: "User created successfully." });
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
   const { username, password } = req.body;
 
   const user = User.findOne({ username });

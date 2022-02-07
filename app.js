@@ -10,6 +10,7 @@ require("dotenv").config();
 const auth = require("./routes/auth");
 const posts = require("./routes/posts");
 const user = require("./routes/user");
+const uploadMedia = require("./routes/uploadMedia");
 
 //DIRECTORY IMPORTS
 const connectDB = require("./db/connect");
@@ -26,6 +27,7 @@ app.use(cors());
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/posts", verifyToken, posts);
 app.use("/api/v1/users", verifyToken, user);
+app.use("/api/v1/uploadMedia", verifyToken, uploadMedia);
 app.use(notFound);
 
 const start = async () => {

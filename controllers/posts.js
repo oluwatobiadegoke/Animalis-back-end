@@ -20,7 +20,7 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-const getPost = (req, res) => {
+const getPost = async (req, res) => {
   const { postId } = req.params;
   if (!postId) {
     res
@@ -37,34 +37,7 @@ const getPost = (req, res) => {
   }
 };
 
-const uploadPost = (req, res) => {
-  const { media } = req.body;
-
-  if (media) {
-    cloudinary.uploader.upload(
-      media,
-      {
-        max_size: "1mb",
-      },
-      (err, result) => {
-        if (err) {
-          res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .json({ success: false, msg: "Post not uploaded" });
-        }
-        const { secure_url } = result;
-        try {
-          const newPost = await Post.create({ ...req.body, media: secure_url });
-          res.status(StatusCodes.OK).json({ success: true, newPost });
-        } catch (error) {
-          res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .json({ success: false, msg: "Post not uploaded" });
-        }
-      }
-    );
-  }
-
+const uploadPost = async (req, res) => {
   try {
     const newPost = await Post.create(req.body);
     res.status(StatusCodes.OK).json({ success: true, newPost });
@@ -75,7 +48,7 @@ const uploadPost = (req, res) => {
   }
 };
 
-const deletePost = (req, res) => {
+const deletePost = async (req, res) => {
   const { postId, userId } = req.params;
   if (!userId) {
     res
@@ -112,7 +85,7 @@ const deletePost = (req, res) => {
   }
 };
 
-const getAllIndividualPosts = (req, res) => {
+const getAllIndividualPosts = async (req, res) => {
   const { userId } = req.params;
   if (!userId) {
     res
