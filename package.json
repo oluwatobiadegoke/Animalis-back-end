@@ -4,7 +4,8 @@
   "description": "Backend server for animalis",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "concurrently \"yarn run server\" \"cd ../animalis && yarn start\"",
+    "server": "nodemon app.js"
   },
   "keywords": [],
   "author": "Oluwatobi",
@@ -27,6 +28,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "concurrently": "^7.0.0",
     "nodemon": "^2.0.15"
   }
 }
