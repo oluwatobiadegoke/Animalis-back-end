@@ -3,19 +3,26 @@ const StatusCodes = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
-  const { username, email } = req.body;
+  const { username, email, password, cpassword } = req.body;
 
-  const userAlreadyExists = User.findOne({ email });
-  if (userAlreadyExists) {
-    return res
-      .status(StatusCodes.CONFLICT)
-      .json({ success: false, msg: "User already exists." });
+  if (password !== cpassword) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ success: false, msg: "Passwords do not match." });
   }
 
-  const usernameTaken = User.findOne({ username });
+  const userAlreadyExists = await User.findOne({ email });
+  if (userAlreadyExists) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      msg: "Email already used on a different account.",
+    });
+  }
+
+  const usernameTaken = await User.findOne({ username });
   if (usernameTaken) {
     return res
-      .status(StatusCodes.CONFLICT)
+      .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "Username already taken." });
   }
 
@@ -28,13 +35,13 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { username, password } = req.body;
 
-  const user = User.findOne({ username });
+  const user = await User.findOne({ username });
   if (!user) {
     res
       .status(StatusCodes.NOT_FOUND)
       .json({ success: false, msg: "User not found." });
   }
-  const isMatch = User.comparPassword(password);
+  const isMatch = await user.comparePassword(password);
 
   if (!isMatch) {
     res
@@ -52,16 +59,20 @@ const login = async (req, res) => {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
-
-  const oneDay = 1000 * 60 * 60 * 24;
   const longerExp = 1000 * 60 * 60 * 24 * 30;
 
-  return res.cookie("token", token, {
+  res.cookie("token", token, {
     expiresIn: new Date(Date.now() + longerExp),
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
     signed: true,
   });
+  res
+    .status(StatusCodes.OK)
+    .json({
+      success: true,
+      user: { userId: user.id, username: user.username },
+    });
 };
 
 module.exports = {

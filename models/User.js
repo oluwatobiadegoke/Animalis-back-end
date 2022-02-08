@@ -22,10 +22,12 @@ const UserSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      default: "",
     },
     bio: {
       type: String,
       max: 50,
+      default: "",
     },
   },
   {
@@ -33,15 +35,15 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-UserSchema.pre("save", function (next) {
+UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
-  const salt = bcrypt.genSalt(10);
-  this.password = bcrypt.hash(this.password, salt);
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.method.comparePassword = async function (candidatePassword) {
+UserSchema.methods.comparePassword = async function (candidatePassword) {
   const matches = await bcrypt.compare(candidatePassword, this.password);
   return matches;
 };
