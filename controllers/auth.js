@@ -67,15 +67,22 @@ const login = async (req, res) => {
     httpOnly: true,
     signed: true,
   });
-  res
-    .status(StatusCodes.OK)
-    .json({
-      success: true,
-      user: { userId: user.id, username: user.username },
-    });
+  res.status(StatusCodes.OK).json({
+    success: true,
+    user: { userId: user.id, username: user.username },
+  });
+};
+
+const logout = async (req, res) => {
+  res.cookie("token", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+  res.status(StatusCodes.OK).json({ success: true, msg: "user logged out!" });
 };
 
 module.exports = {
   register,
   login,
+  logout,
 };
