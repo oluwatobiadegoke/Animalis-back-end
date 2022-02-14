@@ -21,14 +21,14 @@ const getAllPosts = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  const { postId } = req.params;
-  if (!postId) {
+  const { id } = req.params;
+  if (!id) {
     res
       .status(StatusCodes.BAD_REQUEST)
-      .json({ success: false, msg: "postId missing." });
+      .json({ success: false, msg: "id missing." });
   }
   try {
-    const post = await Post.findOne({ _id: postId });
+    const post = await Post.findOne({ _id: id });
     res.status(StatusCodes.OK).json({ success: true, post });
   } catch (error) {
     res
@@ -38,12 +38,10 @@ const getPost = async (req, res) => {
 };
 
 const uploadPost = async (req, res) => {
-  console.log(req.body);
   try {
     const newPost = await Post.create(req.body);
     res.status(StatusCodes.OK).json({ success: true, newPost });
   } catch (error) {
-    console.log(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Post not uploaded" });
