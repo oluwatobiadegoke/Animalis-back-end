@@ -12,8 +12,8 @@ const {
 const addLike = require("../controllers/like");
 const addComment = require("../controllers/comment");
 
-router.get("/", getAllPosts);
-router.route("/:id").get(getPost).post(uploadPost).delete(deletePost);
+router.route("/").get(getAllPosts).post(uploadPost);
+router.route("/:id").get(getPost).delete(deletePost);
 router.get("/user/posts/:id", getAllIndividualPosts);
 router.post("/like/:id", addLike);
 router.post("/comment/:id", addComment);

@@ -59,30 +59,15 @@ const login = async (req, res) => {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
-  const longerExp = 1000 * 60 * 60 * 24 * 30;
 
-  res.cookie("token", token, {
-    expiresIn: new Date(Date.now() + longerExp),
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    signed: true,
-  });
   res.status(StatusCodes.OK).json({
     success: true,
     user: { userId: user.id, username: user.username },
+    token,
   });
-};
-
-const logout = async (req, res) => {
-  res.cookie("token", "logout", {
-    httpOnly: true,
-    expires: new Date(Date.now()),
-  });
-  res.status(StatusCodes.OK).json({ success: true, msg: "user logged out!" });
 };
 
 module.exports = {
   register,
   login,
-  logout,
 };

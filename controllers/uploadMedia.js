@@ -8,27 +8,23 @@ cloudinary.config({
 });
 
 const uploadMedia = async (req, res) => {
+  console.log(req.body);
+  res.header("Access-Control-Allow-Origin", "*");
   const { media } = req.body;
   if (!media) {
     res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "Media missing" });
   }
-  cloudinary.uploader.upload(
-    media,
-    {
-      max_size: "3mb",
-    },
-    (err, result) => {
-      if (err) {
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ success: false, msg: "Media not uploaded" });
-      }
-      const { secure_url } = result;
-      res.status(StatusCodes.OK).json({ success: true, media: secure_url });
+  cloudinary.uploader.upload(media, (err, result) => {
+    if (err) {
+      res
+        .status(StatusCodes.CONFLICT)
+        .json({ success: false, msg: "Media not uploaded" });
     }
-  );
+    const { secure_url } = result;
+    res.status(StatusCodes.OK).json({ success: true, media: secure_url });
+  });
 };
 
 module.exports = uploadMedia;

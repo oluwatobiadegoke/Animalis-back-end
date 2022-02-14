@@ -21,10 +21,16 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: [true, "Say something."],
     },
-    media: {
-      type: String,
-      default: "",
-    },
+    media: [
+      {
+        link: String,
+        type: {
+          type: String,
+          enum: ["image", "video"],
+          default: "image",
+        },
+      },
+    ],
     likes: [
       {
         userId: {
@@ -42,10 +48,6 @@ const PostSchema = new mongoose.Schema(
         username: {
           type: String,
           required: true,
-        },
-        userAvatar: {
-          type: String,
-          default: "",
         },
         text: {
           type: String,

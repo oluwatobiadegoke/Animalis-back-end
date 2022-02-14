@@ -38,10 +38,12 @@ const getPost = async (req, res) => {
 };
 
 const uploadPost = async (req, res) => {
+  console.log(req.body);
   try {
     const newPost = await Post.create(req.body);
     res.status(StatusCodes.OK).json({ success: true, newPost });
   } catch (error) {
+    console.log(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Post not uploaded" });

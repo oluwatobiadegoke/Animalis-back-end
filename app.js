@@ -4,7 +4,6 @@ require("express-async-errors");
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const xss = require("xss-clean");
 
@@ -21,16 +20,24 @@ const verifyToken = require("./middlewares/authentication");
 
 const port = process.env.PORT || 8000;
 
-app.use(express.json());
 app.use(cookieParser(`${process.env.COOKIE_SECRET}`));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
+const whitelist = ["http://localhost:3000", "https://animalkgdm.netlify.app/"];
+const corsOptions = {
+  credentials: true,
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin)) return callback(null, true);
+
+    callback(new Error("Not allowed by CORS"));
+  },
+};
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
 app.use(xss());
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/posts", verifyToken, posts);
 app.use("/api/v1/users", verifyToken, user);
-app.use("/api/v1/uploadMedia", verifyToken, uploadMedia);
+app.use("/api/v1/upload", verifyToken, uploadMedia);
 app.use(notFound);
 
 const start = async () => {

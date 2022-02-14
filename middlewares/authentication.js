@@ -2,13 +2,14 @@ const jwt = require("jsonwebtoken");
 const StatusCodes = require("http-status-codes");
 
 const verifyToken = async (req, res, next) => {
-  const token = req.cookies.token || "";
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ success: false, msg: "Please login first." });
+  }
   try {
-    if (!token) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ success: false, msg: "Please login first." });
-    }
     const verify = jwt.verify(token, process.env.JWT_SECRET);
     req.user = {
       userId: verify.userId,
