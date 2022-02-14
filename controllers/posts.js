@@ -1,13 +1,6 @@
 const StatusCodes = require("http-status-codes");
-const cloudinary = require("cloudinary").v2;
 
 const Post = require("../models/Post");
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
 
 const getAllPosts = async (req, res) => {
   try {
