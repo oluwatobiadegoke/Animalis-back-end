@@ -41,6 +41,10 @@ const PostSchema = new mongoose.Schema(
     ],
     comments: [
       {
+        postId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Post",
+        },
         userId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
@@ -53,9 +57,8 @@ const PostSchema = new mongoose.Schema(
           type: String,
           required: [true, "Please provide a comment."],
         },
-
-        date: Date,
       },
+      { timestamps: true },
     ],
   },
   {

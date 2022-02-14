@@ -6,7 +6,7 @@ const register = async (req, res) => {
   const { username, email, password, cpassword } = req.body;
 
   if (password !== cpassword) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "Passwords do not match." });
   }
@@ -27,7 +27,7 @@ const register = async (req, res) => {
   }
 
   const newUser = await User.create(req.body);
-  res
+  return res
     .status(StatusCodes.CREATED)
     .json({ success: true, msg: "User created successfully." });
 };
@@ -37,14 +37,14 @@ const login = async (req, res) => {
 
   const user = await User.findOne({ username });
   if (!user) {
-    res
+    return res
       .status(StatusCodes.NOT_FOUND)
       .json({ success: false, msg: "User not found." });
   }
   const isMatch = await user.comparePassword(password);
 
   if (!isMatch) {
-    res
+    return res
       .status(StatusCodes.NOT_FOUND)
       .json({ success: false, msg: "Incorrect password." });
   }
@@ -60,7 +60,7 @@ const login = async (req, res) => {
     }
   );
 
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     success: true,
     user: { userId: user.id, username: user.username },
     token,

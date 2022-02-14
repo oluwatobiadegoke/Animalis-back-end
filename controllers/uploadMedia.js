@@ -12,18 +12,20 @@ const uploadMedia = async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const { media } = req.body;
   if (!media) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "Media missing" });
   }
   cloudinary.uploader.upload(media, (err, result) => {
     if (err) {
-      res
+      return res
         .status(StatusCodes.CONFLICT)
         .json({ success: false, msg: "Media not uploaded" });
     }
     const { secure_url } = result;
-    res.status(StatusCodes.OK).json({ success: true, media: secure_url });
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, media: secure_url });
   });
 };
 

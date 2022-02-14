@@ -5,9 +5,9 @@ const Post = require("../models/Post");
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find({});
-    res.status(StatusCodes.OK).json({ success: true, posts });
+    return res.status(StatusCodes.OK).json({ success: true, posts });
   } catch (error) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Posts not fetched" });
   }
@@ -16,15 +16,15 @@ const getAllPosts = async (req, res) => {
 const getPost = async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "id missing." });
   }
   try {
     const post = await Post.findOne({ _id: id });
-    res.status(StatusCodes.OK).json({ success: true, post });
+    return res.status(StatusCodes.OK).json({ success: true, post });
   } catch (error) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Post not fetched" });
   }
@@ -33,9 +33,9 @@ const getPost = async (req, res) => {
 const uploadPost = async (req, res) => {
   try {
     const newPost = await Post.create(req.body);
-    res.status(StatusCodes.OK).json({ success: true, newPost });
+    return res.status(StatusCodes.OK).json({ success: true, newPost });
   } catch (error) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Post not uploaded" });
   }
@@ -44,12 +44,12 @@ const uploadPost = async (req, res) => {
 const deletePost = async (req, res) => {
   const { postId, userId } = req.params;
   if (!userId) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "userId missing." });
   }
   if (!postId) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "postId missing." });
   }
@@ -57,22 +57,22 @@ const deletePost = async (req, res) => {
   try {
     post = await Post.findOne({ _id: postId });
   } catch (error) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Post not found" });
   }
   if (post.user.toString() !== userId) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "You cannot delete this post" });
   }
   try {
     const deletedPost = await Post.findByIdAndDelete(postId);
-    res
+    return res
       .status(StatusCodes.OK)
       .json({ success: true, msg: "Post deleted", deletedPost });
   } catch (error) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Post not deleted" });
   }
@@ -81,15 +81,15 @@ const deletePost = async (req, res) => {
 const getAllIndividualPosts = async (req, res) => {
   const { userId } = req.params;
   if (!userId) {
-    res
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, msg: "userId missing." });
   }
   try {
     const posts = await Post.find({ user: userId });
-    res.status(StatusCodes.OK).json({ success: true, posts });
+    return res.status(StatusCodes.OK).json({ success: true, posts });
   } catch (error) {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, msg: "Posts not fetched" });
   }
