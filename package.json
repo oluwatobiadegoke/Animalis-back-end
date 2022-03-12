@@ -4,7 +4,7 @@
   "description": "Backend server for animalis",
   "main": "app.js",
   "scripts": {
-    "start": "concurrently \"yarn run server\" \"cd ../animalis && yarn start\"",
+    "start": "concurrently \"yarn run server\" \"cd ../frontend && yarn start\"",
     "server": "nodemon app.js"
   },
   "keywords": [],
