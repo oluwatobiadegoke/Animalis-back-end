@@ -79,14 +79,17 @@ const deletePost = async (req, res) => {
 };
 
 const getAllIndividualPosts = async (req, res) => {
-  const { userId } = req.params;
-  if (!userId) {
+  const { id } = req.params;
+  if (!id) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json({ success: false, msg: "userId missing." });
+      .json({ success: false, msg: "id missing." });
   }
   try {
-    const posts = await Post.find({ user: userId });
+    const posts = await Post.find({ user: id });
+    if (!posts) {
+      return res.status(StatusCodes.OK).json({ success: true, posts: [] });
+    }
     return res.status(StatusCodes.OK).json({ success: true, posts });
   } catch (error) {
     return res
@@ -95,10 +98,33 @@ const getAllIndividualPosts = async (req, res) => {
   }
 };
 
+const getAllIndividualMediaPosts = async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ success: false, msg: "id missing." });
+  }
+  try {
+    const posts = await Post.find({ user: id });
+    if (!posts) {
+      return res.status(StatusCodes.OK).json({ success: true, posts: [] });
+    }
+    const mediaPosts = posts.filter((post) => post.media.length > 0);
+    if (!mediaPosts) {
+      return res.status(StatusCodes.OK).json({ success: true, posts: [] });
+    }
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, posts: mediaPosts });
+  } catch (error) {}
+};
+
 module.exports = {
   getAllPosts,
   getPost,
   uploadPost,
   deletePost,
   getAllIndividualPosts,
+  getAllIndividualMediaPosts,
 };

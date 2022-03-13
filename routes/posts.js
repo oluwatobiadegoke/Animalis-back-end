@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   getAllPosts,
   getAllIndividualPosts,
+  getAllIndividualMediaPosts,
   getPost,
   uploadPost,
   deletePost,
@@ -14,7 +15,8 @@ const { addComment, removeComment } = require("../controllers/comment");
 
 router.route("/").get(getAllPosts).post(uploadPost);
 router.route("/:id").get(getPost).delete(deletePost);
-router.get("/user/posts/:id", getAllIndividualPosts);
+router.get("/user/:id", getAllIndividualPosts);
+router.get("/usermedia/:id", getAllIndividualMediaPosts);
 router.post("/like", addLike);
 router.post("/unlike", removeLike);
 router.route("/comment").post(addComment);
